@@ -15,3 +15,6 @@ t = ParserModule.get_stat_by_team(csv_file, headers, 2011, "BA","OAK")
 # interface notes
 # user sets leader is highest, as well as all of above
 puts t.to_s
+
+v = ParserModule.stat_leader(csv_file, headers, 2010, "AB", "AL", true)
+puts v.to_s

@@ -43,16 +43,19 @@ module StatsModule
       stats = BATTING_AVERAGE_STATS
       mins = BATTING_AVERAGE_MINIMUMS
       method = return_batting_average_lambda
+      complex_stat = true
       
-      return stats, mins, method
+      return stats, mins, method, complex_stat
     when "SLG"
       stats = SLUGGING_PERCENTAGE_STATS
       mins = SLUGGING_PERCENTAGE_MINIMUMS
       method = return_slugging_percentage_lambda
+      complex_stat = true
       
-      return stats, mins, method
+      return stats, mins, method, complex_stat
     else
-      return nil, nil, return_miscellaneous_stats_lambda
+      complex_stat = nil
+      return nil, nil, return_miscellaneous_stats_lambda, complex_stat
     end
   end
 end

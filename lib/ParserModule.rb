@@ -89,6 +89,15 @@ module ParserModule
       if leader_hash.nil?
 	leader_hash = challenger_hash.dup
       end
+ 
+      if leader_is_highest and stats_lambda.call(challenger_hash) > stats_lambda.call(leader_hash)
+	leader_hash = challenger_hash.dup
+      end
+      return leader_hash
+#       leader_stat_value = stats_lambda.call(leader_hash)
+#       challenger_stat_value = stats_lambda.call(challenger_hash)
+#       puts leader_stat_value, challenger_stat_value
+#       raise "COMPLEX"
     end
   end
 end

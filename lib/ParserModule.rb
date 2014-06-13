@@ -30,13 +30,12 @@ module ParserModule
     return leader_hash
   end
   
-  # TODO test
-  def self.get_stat_increase_leader_by_years(stat_rows, headers, year1, year2, stat_name, years_ascending)
+  def self.get_stat_increase_leader(stat_rows, headers, year1, year2, stat_name, years_ascending)
     stats_keys, minimums_hash, stats_lambda, complex_stat = StatsModule.constants_and_method_by_stat(stat_name)
     stats_hash = create_stats_hash(stats_keys, stat_name)
     
     year1, year2 = set_year_order(year1, year2, years_ascending)
-    leader_hash = {"name" => nil, "stat_name" => stat_name, "difference" => -1}
+    leader_hash = {"playerID" => nil, "stat_name" => stat_name, "difference" => -1}
     year1_hash = {}
     year2_hash = {}
     stat_rows.select do |row|
@@ -48,9 +47,9 @@ module ParserModule
 	# TODO fix .dup
 	y1 = year1_hash.dup
 	year2_hash = return_stat_by_row(row, headers, stats_hash)
-	difference =  compare_change(y1, year2_hash, stat_name, minimums_hash, stats_lambda, complex_stat, leader_hash)
+	difference =  compare_increase(y1, year2_hash, stat_name, minimums_hash, stats_lambda, complex_stat, leader_hash)
 	if !difference.nil?
-	  leader_hash = {"name" => value_by_row(row, headers, "playerID"), "stat_name" => stat_name, "difference" => difference}
+	  leader_hash = {"playerID" => value_by_row(row, headers, "playerID"), "stat_name" => stat_name, "difference" => difference}
 	end
       end
     end
@@ -168,18 +167,17 @@ module ParserModule
     return first_year, second_year
   end
   
-  # TODO test
-  def self.compare_change(year1_hash, year2_hash, stat_name, minimums_hash, stats_lambda, complex_stat, leader_hash)
+  def self.compare_increase(year1_hash, year2_hash, stat_name, minimums_hash, stats_lambda, complex_stat, leader_hash)
     if meets_minimums?(year1_hash, minimums_hash) and meets_minimums?(year2_hash, minimums_hash)
       if complex_stat
-	if year1_hash["name"] == year2_hash["name"]
+	if year1_hash["playerID"] == year2_hash["playerID"]
 	  difference = stats_lambda.call(year2_hash) - stats_lambda.call(year1_hash)
 	  if difference > leader_hash["difference"]
 	    return difference
 	  end
 	end
       else
-	if year1_hash["name"] == year2_hash["name"]
+	if year1_hash["playerID"] == year2_hash["playerID"]
 	  difference = year2_hash[stat_name].to_i - year1_hash[stat_name].to_i
 	  if difference > leader_hash["difference"]
 	    return difference

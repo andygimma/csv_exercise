@@ -14,16 +14,19 @@ describe ParserModule do
   let(:year_2010) { 2010 }
   let(:leader_is_highest_true) { true }
   let(:leader_is_highest_false) { false }
-  let(:minimums_hash) { { "AB" => 400 } }
+  let(:minimums_hash) { { "AB" => 200 } }
   let(:minimums_hash_nil) { nil }
-  let(:stats_hash_above_minimum) { {"AB" => 500, "H" => 100} }
-  let(:stats_hash_below_minimum) { {"AB" => 300, "H" => 100} }
+  let(:stats_hash_above_minimum) { {"AB" => 300, "H" => 100} }
+  let(:stats_hash_batting_average_increase) { {"AB" => 300, "H" => 140} }
+  let(:stats_hash_below_minimum) { {"AB" => 150, "H" => 100} }
   let(:leader_hash_hits) { { "H" => 200 } }
   let(:challenger_hash_hits_low) { { "H" => 100 } }
   let(:challenger_hash_hits_high) { { "H" => 300 } }
+  let(:leader_hash) { {"playerID" => "NAME", "stat_name" => "BA", "difference" => -1} }
   let(:headers) { ["playerID", "yearID", "league", "teamID", "G", "AB", "R", "H", "2B", "3B", "HR", "RBI", "SB", "CS"] }
   let(:row) { ["name1", 2010, "NL", "ATL", 100, 500, 100, 100, 10, 10, 10, 10, 10] }
-  let(:stat_rows) { [["name2", 2011, "AL", "SEA", 100, 500, 100, 100, 10, 10, 10, 10, 10, 0], ["name3", 2010, "NL", "ATL", 100, 500, 100, 100, 10, 10, 5, 10, 10, 0], ["name4", 2010, "NL", "ATL", 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], ["name", 2010, "AL", "OAK", 100, 500, 100, 100, 10, 10, 10, 10, 10, 0], ["name5", 2010, "NL", "ATL", 100, 500, 100, 100, 10, 10, 10, 10, 10, 0]] }
+  let(:stat_rows) { [["name2", 2011, "AL", "SEA", 100, 500, 100, 100, 10, 10, 10, 10, 10, 0], ["name3", 2010, "NL", "ATL", 100, 500, 100, 100, 10, 10, 5, 10, 10, 0], ["name4", 2010, "NL", "ATL", 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], ["name", 2011, "AL", "OAK", 100, 500, 100, 100, 10, 10, 10, 10, 10, 0],["name", 2010, "AL", "OAK", 100, 500, 100, 110, 10, 10, 10, 10, 10, 0], ["name5", 2010, "NL", "ATL", 100, 500, 100, 100, 10, 10, 10, 10, 10, 0]] }
+
 
   
   context "if passing create_stats_hash an array as first param" do
@@ -130,9 +133,10 @@ describe ParserModule do
 
   it "should return the stat leader of a given stat using stat_leader" do
     leader = ParserModule.stat_leader(stat_rows, headers, year_2010, stat_hits, "AL", leader_is_highest_true)
-    expect(leader).to eq({"H"=>100, "name"=>"name"})
+    expect(leader).to eq({"H"=>110, "name"=>"name"})
   end
   
+  # TODO clean
   context "when using challenger_beats_leader()" do
     context "if complex_stat is nil in challenger_beats_leader()" do
       it "should compare the leader and challenger hashes, and return the player with the highest total" do
@@ -157,14 +161,13 @@ describe ParserModule do
 	expect(leader_hash).to eq(leader_hash)
       end
     end
-    
+  end
     it "should test for a triple crown winner using offensive_triple_crown_winner_by_year" do
       triple_crown_winner = ParserModule.offensive_triple_crown_winner_by_year(stat_rows, headers, year_2010, "AL")
-      expect(triple_crown_winner).to eq({"AB"=>500, "H"=>100, "name"=>"name", "HR"=>10, "RBI"=>10})
+      expect(triple_crown_winner).to eq({"AB"=>500, "H"=>110, "name"=>"name", "HR"=>10, "RBI"=>10})
       
       triple_crown_winner = ParserModule.offensive_triple_crown_winner_by_year(stat_rows, headers, year_2010, "NL")
       expect(triple_crown_winner).to eq(nil)
-
     end
     
     it "should use set_year_order, taking two integers and sorting them according to years_ascending" do
@@ -176,5 +179,38 @@ describe ParserModule do
       expect(year1).to eq(2011)
       expect(year2).to eq(2010)
     end
-  end
+    
+    context "when passing a complex stat to get_stat_increase_leader_by_year" do
+      it "should return the stat with the highest change" do
+	leader = ParserModule.get_stat_increase_leader(stat_rows, headers, 2010, 2011, "BA", false)
+	expect(leader).to eq({"playerID"=>"name", "stat_name"=>"BA", "difference"=>0.01999999999999999})
+      end
+    end
+    
+    context "when passing a complex stat to get_stat compare" do
+      it "should return the differencel" do
+	returned_leader_hash = ParserModule.compare_increase(stats_hash_above_minimum, stats_hash_batting_average_increase, "BA", minimums_hash, StatsModule.return_batting_average_lambda, true,  leader_hash)
+	expect(returned_leader_hash).to eq(0.134)
+	
+	returned_leader_hash = ParserModule.compare_increase(stats_hash_above_minimum, stats_hash_above_minimum, "BA", minimums_hash, StatsModule.return_batting_average_lambda, true,  leader_hash)
+	expect(returned_leader_hash).to eq(0.0)
+      end
+    end
+    
+    context "when passing a non-complex stat to get_stat compare" do
+      it "should return the difference" do
+	returned_leader_hash = ParserModule.compare_increase(stats_hash_above_minimum, stats_hash_batting_average_increase,  "H", minimums_hash, StatsModule.return_miscellaneous_stats_lambda, false, leader_hash)
+	expect(returned_leader_hash).to eq(40)
+	
+	returned_leader_hash = ParserModule.compare_increase(stats_hash_above_minimum, stats_hash_above_minimum,  "H", minimums_hash, StatsModule.return_miscellaneous_stats_lambda, false, leader_hash)
+	expect(returned_leader_hash).to eq(0)
+      end
+    end
+      
+    context "when passing a stat that isn't complex to get_stat_increase_leader_by_year" do
+      it "should return the difference, or nil" do
+	leader = ParserModule.get_stat_increase_leader(stat_rows, headers, 2010, 2011, "H", false)
+	expect(leader).to eq({"playerID"=>"name", "stat_name"=>"H", "difference"=>10})
+      end
+    end
 end

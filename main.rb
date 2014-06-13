@@ -20,12 +20,8 @@ TEAM_OAK = "OAK"
 
 
 # Get Oaklands 2011 team slugging percentage
-t = ParserModule.get_stat_by_team(CSV_FILE, HEADERS, 2007, SLG, TEAM_OAK)
-
-# interface notes
-# user sets leader is highest, as well as all of above
-puts "In 2007, OAK has a team slugging percentage of #{t[0]}"
-
+slg = ParserModule.get_stat_by_team(CSV_FILE, HEADERS, 2007, SLG, TEAM_OAK)
+puts "In 2007, OAK has a team slugging percentage of #{slg[0]}"
 
 # Get triple crown winners in each league in 2011, 2012
 years.each do |year|
@@ -39,5 +35,6 @@ years.each do |year|
   end
 end
 
-leader = ParserModule.get_stat_increase_leader_by_years(CSV_FILE, HEADERS, 2009, 2010, "SLG", false)
-puts "The largest leader in batting average change from 2009 to 2010 with at least 200 at bats was #{leader["name"]} with an increase of #{leader["difference"].round(3)}"
+# get the most improved batting average from 2009 to 2010
+leader = ParserModule.get_stat_increase_leader(CSV_FILE, HEADERS, 2009, 2010, "BA", false)
+puts "The largest leader in batting average change from 2009 to 2010 with at least 200 at bats was #{leader["playerID"]} with an increase of #{leader["difference"].round(3)}"

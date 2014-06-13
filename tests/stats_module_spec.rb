@@ -7,9 +7,9 @@ describe StatsModule do
     expect(batting_average_minimums.empty?).to eq(false)
   end
   
-  it "should provide minimums for slugging percentage, which are nil" do
+  it "should provide minimums for slugging percentage" do
     slugging_percentage_minimums =StatsModule::SLUGGING_PERCENTAGE_MINIMUMS
-    expect(slugging_percentage_minimums.nil?).to eq(true)
+    expect(slugging_percentage_minimums.nil?).to eq(false)
   end
   
   it "should return a batting average lambda, that correctly calculates batting average" do
@@ -30,10 +30,10 @@ describe StatsModule do
     it "should return stats, mins and method for each stat" do
       stats, min, method = StatsModule.constants_and_method_by_stat("BA")
       expect(stats).to eq(["AB", "H"])
-      expect(min).to eq({"AB" => 400})
+      expect(min).to eq({"AB" => 200})
       batting_average = method.call({ "AB" => 400, "H" => 100})
       expect(batting_average).to eq(0.250)
-      expect(min).to eq({ "AB" => 400 })
+      expect(min).to eq({ "AB" => 200 })
     end
   end
   
@@ -43,7 +43,7 @@ describe StatsModule do
 
       stats, min, method = StatsModule.constants_and_method_by_stat("SLG")
       expect(stats).to eq(["AB", "H", "2B", "3B", "HR"])
-      expect(min).to eq(nil)
+      expect(min).to eq({"AB" => 200})
       slugging = method.call(stats_hash)
       expect(slugging).to eq(0.50)
     end
@@ -56,6 +56,4 @@ describe StatsModule do
       expect(method.nil?).to eq(false)  
     end  
   end
-  
-
 end

@@ -1,7 +1,7 @@
 module StatsModule
   # required minimums for each compiled stat
-  BATTING_AVERAGE_MINIMUMS = { "AB" => 400 }
-  SLUGGING_PERCENTAGE_MINIMUMS = nil
+  BATTING_AVERAGE_MINIMUMS = { "AB" => 200 }
+  SLUGGING_PERCENTAGE_MINIMUMS = { "AB" => 200 }
   
   # stats needed for each compiled stat
   BATTING_AVERAGE_STATS = ["AB", "H"]

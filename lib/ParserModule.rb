@@ -30,7 +30,7 @@ module ParserModule
     return leader_hash
   end
   
-  def self.get_stat_increase_leader(stat_rows, headers, year1, year2, stat_name, years_ascending)
+  def self.get_stat_increase_leader(stat_rows, headers, year1, year2, stat_name, years_ascending = false)
     stats_keys, minimums_hash, stats_lambda, complex_stat = StatsModule.constants_and_method_by_stat(stat_name)
     stats_hash = create_stats_hash(stats_keys, stat_name)
     

@@ -1,3 +1,21 @@
+to run
+
+$ ruby main.rb
+
+main functions
+
+ParserModule.get_stat_by_team(stat_rows, headers, year, stat_name, team_name)
+- year, stat_name and team_name can be changed to provide a variety of statistics
+
+ParserModule.stat_leader(stat_rows, headers, year, stat_name, league, leader_is_highest)
+- year, stat_name, league and leader_is_highest can be changed.
+- leader_is_highest is a boolean set to true when a higher number represents a better outcome. HR for instance. It would be false for stats like pitching ERA.
+
+ParserModule.get_stat_increase_leader(stat_rows, headers, year1, year2, stat_name, years_ascending)
+- year1, year2, stat_name and years_ascending can be changed
+- years_ascending is a boolean. The only assumption made in creating this application was that the CSV would be in order by name, and by year. The year can be ascending or descending, and can be recognized by setting this boolean. years_ascending is set to false by default, because simply because this csv file was created that way
+
+
 Assumptions: All requests currently are based on data in the hitting file. Future requests of the system will require data from a pitching file as well. Consider this in the design.
 
 Requirements: When the application is run, use the provided data and calculate the following results and write them to STDOUT. 

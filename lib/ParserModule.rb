@@ -2,33 +2,6 @@ require_relative "./StatsModule"
 
 module ParserModule
   include StatsModule
-  
-  # TODO test
-  def self.get_stat_increase_leader_by_years(stat_rows, headers, year1, year2, stat_name, years_ascending)
-    stats_keys, minimums_hash, stats_lambda, complex_stat = StatsModule.constants_and_method_by_stat(stat_name)
-    stats_hash = create_stats_hash(stats_keys, stat_name)
-    
-    year1, year2 = set_year_order(year1, year2, years_ascending)
-    leader_hash = {"name" => nil, "stat_name" => stat_name, "difference" => -1}
-    year1_hash = {}
-    year2_hash = {}
-    stat_rows.select do |row|
-      if match_year?(row, headers, year1)
-	year1_hash = return_stat_by_row(row, headers, stats_hash)
-      end
-      
-      if match_year?(row, headers, year2)
-	# TODO fix .dup
-	y1 = year1_hash.dup
-	year2_hash = return_stat_by_row(row, headers, stats_hash)
-	difference =  compare_change(y1, year2_hash, stat_name, minimums_hash, stats_lambda, complex_stat, leader_hash)
-	if !difference.nil?
-	  leader_hash = {"name" => value_by_row(row, headers, "playerID"), "stat_name" => stat_name, "difference" => difference}
-	end
-      end
-    end
-    return leader_hash
-  end
 
   def self.get_stat_by_team(stat_rows, headers, year, stat_name, team_name)
     stats_keys, minimums_hash, stats_lambda, complex_stat = StatsModule.constants_and_method_by_stat(stat_name)
@@ -53,6 +26,33 @@ module ParserModule
 	leader_hash = challenger_beats_leader(challenger_hash, leader_hash, minimums_hash, stat_name, stats_lambda, leader_is_highest, complex_stat)
       end
 
+    end
+    return leader_hash
+  end
+  
+  # TODO test
+  def self.get_stat_increase_leader_by_years(stat_rows, headers, year1, year2, stat_name, years_ascending)
+    stats_keys, minimums_hash, stats_lambda, complex_stat = StatsModule.constants_and_method_by_stat(stat_name)
+    stats_hash = create_stats_hash(stats_keys, stat_name)
+    
+    year1, year2 = set_year_order(year1, year2, years_ascending)
+    leader_hash = {"name" => nil, "stat_name" => stat_name, "difference" => -1}
+    year1_hash = {}
+    year2_hash = {}
+    stat_rows.select do |row|
+      if match_year?(row, headers, year1)
+	year1_hash = return_stat_by_row(row, headers, stats_hash)
+      end
+      
+      if match_year?(row, headers, year2)
+	# TODO fix .dup
+	y1 = year1_hash.dup
+	year2_hash = return_stat_by_row(row, headers, stats_hash)
+	difference =  compare_change(y1, year2_hash, stat_name, minimums_hash, stats_lambda, complex_stat, leader_hash)
+	if !difference.nil?
+	  leader_hash = {"name" => value_by_row(row, headers, "playerID"), "stat_name" => stat_name, "difference" => difference}
+	end
+      end
     end
     return leader_hash
   end

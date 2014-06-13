@@ -22,7 +22,7 @@ This keeps the code modular and csv-header-agnostic. This means you can change t
 
 All statistical processing is done in StatsModule. Here we keep functions and a few lambdas to compile stats like batting average, that require more than just reading from the CSV.
 
-This app was made using rspec, and all tests are in the /tests folder.
+This app was made using rspec, and all tests are in the /tests folder. The app was version controlled using git. Since I was the only person working on it, I mostly stayed on the main branch.
 
 The only assumption made while using the application was that the csv would be ordered by name, and that they would be in order by year. The order can be ascending or descending. The application covers either case, as long as it is explictly told what the case is. Only Batting-07-12.csv was used Master-small.csv wasn't necessary to fulfill the requirements. 
 

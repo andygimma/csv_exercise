@@ -54,3 +54,6 @@ b) You can search for any stat leader in all of the aforementioned stats, in any
 c) You can find the largest increase leader in any of the aforementioned stats, in any year, with minimums accounted for.
 
 d) As mentioned above, this can be used for pitchers, different sports, or any stats analysis. Any stat that isn't immediately in the CSV file can have a lambda added to the StatsModule. To add a new stat, stimply add constant for MINIMUMS, STATS, and LAMDA. Then add a case for the name of the stat, which you will then pass to any of the 3 main functions, in constants_and_method_by_stat.
+
+Next Steps:
+Were I to spend more time on this, I'd create a ConsoleModule, to allow for interactive use. Since this is an exercise meant to be sent back for a job application, I left that off for now.
